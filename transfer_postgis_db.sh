@@ -1,11 +1,26 @@
 #!/bin/bash
 
+usage()
+{
+cat << EOF
+usage: $0 options
+ 
+This script transfer a postgis database from one server to another
+ 
+OPTIONS:
+   -h      Show this message
+   -d      Database name
+   -o      Owner
+EOF
+}
+
 in=$1
 out=$2
 dbname=$3
 owner=$4
 
 pg_share_dir=$(pg_config --sharedir);
+
 
 # get data from server
 pg_dump -h $in -p 5432 -U postgres -Fc -b -v -f "/var/tmp/${dbname}.backup" ${dbname}
