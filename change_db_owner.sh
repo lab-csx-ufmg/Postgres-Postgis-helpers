@@ -42,10 +42,10 @@ then
      exit 1
 fi
 
-for tbl in `psql -qAt -c "select '\"' || schemaname || '\".\"' || tablename || '\"' from pg_tables where schemaname <> 'pg_catalog' and schemaname <> 'information_schema';" ${DB_NAME}` \
-           `psql -qAt -c "select '\"' || sequence_schema || '\".\"' || sequence_name || '\"' from information_schema.sequences where sequence_schema <> 'pg_catalog' and sequence_schema <> 'information_schema';" ${DB_NAME}` \
-           `psql -qAt -c "select '\"' || table_schema || '\".\"' || table_name || '\"' from information_schema.views where table_schema <> 'pg_catalog' and table_schema <> 'information_schema';" ${DB_NAME}` ;
+for tbl in `psql -U postgres -qAt -c "select '\"' || schemaname || '\".\"' || tablename || '\"' from pg_tables where schemaname <> 'pg_catalog' and schemaname <> 'information_schema';" ${DB_NAME}` \
+           `psql -U postgres -qAt -c "select '\"' || sequence_schema || '\".\"' || sequence_name || '\"' from information_schema.sequences where sequence_schema <> 'pg_catalog' and sequence_schema <> 'information_schema';" ${DB_NAME}` \
+           `psql -U postgres -qAt -c "select '\"' || table_schema || '\".\"' || table_name || '\"' from information_schema.views where table_schema <> 'pg_catalog' and table_schema <> 'information_schema';" ${DB_NAME}` ;
 do
-        echo "psql -c \"alter table $tbl owner to \"${NEW_OWNER}\"\" ${DB_NAME}" ;
-        psql -c "alter table $tbl owner to \"${NEW_OWNER}\"" ${DB_NAME} ;
+        echo "psql -U postgres -c \"ALTER TABLE $tbl OWNER TO \"${NEW_OWNER}\"\" ${DB_NAME}" ;
+        psql -U postgres -c "ALTER TABLE $tbl OWNER TO \"${NEW_OWNER}\"" ${DB_NAME} ;
 done

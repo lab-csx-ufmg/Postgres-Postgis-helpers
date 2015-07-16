@@ -4,32 +4,88 @@ usage()
 {
 cat << EOF
 usage: $0 options
- 
+
 This script transfer a postgis database from one server to another
  
 OPTIONS:
-   -h      Show this message
-   -d      Database name
-   -o      Owner
+	-h
+	  Show this message
+	
+	-o
+	  Origin server
+	
+	-d
+	  Destination server
+	  Default value localhost
+	
+	-db
+	  Database name
+	
+	-ow
+	  Owner
+	  Default value postgres
+
+	-dir
+	  Backup folder
+	  Default value /var/tmp
+
 EOF
 }
 
-in=$1
-out=$2
-dbname=$3
-owner=$4
+ORIGIN=
+DESTINATION="localhost"
+DBNAME=
+OWNER="postgres"
+BKPFOLDER="/var/tmp"
+PGISRESTORE=$(pg_config --sharedir)/contrib/postgis-2.1/postgis_restore.pl
 
-pg_share_dir=$(pg_config --sharedir);
+# A string with command options
+OPTIONS=$@
 
+# An array with all the arguments
+ARGUMENTS=($OPTIONS)
+
+# Loop index
+IDX=0
+
+for OPT in $OPTIONS
+do
+    # Incrementing index
+    IDX=`expr $IDX + 1`
+
+	case "$OPT" in
+		-h)
+			usage; exit 1;;
+		-o)
+			ORIGIN=${ARGUMENTS[$IDX]};;
+		-d)
+			DESTINATION=${ARGUMENTS[$IDX]};;
+		-f)
+			BKPFOLDER=${ARGUMENTS[$IDX]};;
+		-dbname)
+			DBNAME=${ARGUMENTS[$IDX]};;
+		-owner)
+			OWNER=${ARGUMENTS[$IDX]};;
+	esac
+done
+
+if [[ -z $ORIGIN ]] || [[ -z $DESTINATION ]] || [[ -z $DBNAME ]] || [[ -z $OWNER ]]
+	then
+		usage
+		exit 1
+fi
 
 # get data from server
-pg_dump -h $in -p 5432 -U postgres -Fc -b -v -f "/var/tmp/${dbname}.backup" ${dbname}
+pg_dump -h $ORIGIN -p 5432 -U postgres -Fc -b -v -f "$BKPFOLDER/$DBNAME.backup" $DBNAME
 
 # create new database
-psql -h $out -p 5432 -U postgres -c "CREATE DATABASE \"${dbname}\" OWNER \"${owner}\";"
+psql -h $DESTINATION -p 5432 -U postgres -c "CREATE DATABASE \"$DBNAME\" OWNER \"$OWNER\";"
 
 # create db extention
-psql -h $out -p 5432 -U postgres -d ${dbname} -c "CREATE EXTENSION postgis;"
+psql -h $DESTINATION -p 5432 -U postgres -d $DBNAME -c "CREATE EXTENSION postgis;"
 
 # put data on database
-perl ${pg_share_dir}/contrib/postgis-2.1/postgis_restore.pl "/var/tmp/${dbname}.backup" | psql -h $out -U postgres ${dbname} 2>> /var/tmp/backupPostgres.log
+perl $PGISRESTORE  "$BKPFOLDER/$DBNAME.backup" | psql -h $DESTINATION -U postgres $DBNAME 2>> $BKPFOLDER/backup.log
+
+#change owner
+./change_db_owner.sh -d $DBNAME -o $OWNER
