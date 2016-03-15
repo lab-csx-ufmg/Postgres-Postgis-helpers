@@ -1,4 +1,5 @@
 # Postgres-Postgis-helpers
+These are a set of helper scripts that make our lifes easy dealing with postgres/postgis.
 
 ## Postgis Transfer
 transfer_postigis_db and change_db_owner can be used for transfering data from one spatial database to another using the network. One of the uncommon (but very helpful) usage of theses scripts is to indirect backup data in a newer or older version of postgres/postgis.
