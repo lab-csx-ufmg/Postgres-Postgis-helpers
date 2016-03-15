@@ -1,4 +1,4 @@
-# Postgres-Postgis-helpers
+# Postgres/Postgis helpers
 These are a set of helper scripts that make our lifes easy dealing with postgres/postgis.
 
 ## Postgis Transfer
