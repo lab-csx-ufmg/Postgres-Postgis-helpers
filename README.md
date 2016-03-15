@@ -27,5 +27,5 @@ To show the help messages, just execute each shell script with param "-h"
 ./transfer_postgis_db.sh -h
 ```
 
-### Contributions
-If you have contributions to this code, please make a pull request and let us know.
+# Contributions
+If you have contributions to our code, please make a pull request and let us know.
