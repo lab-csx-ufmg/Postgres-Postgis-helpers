@@ -1,16 +1,13 @@
 # Postgres/Postgis helpers
-These are a set of helper scripts that make our lifes easy dealing with postgres/postgis.
+Those scripts are a set of helpers to make our lifes easier when dealing with postgres/postgis.
 
 ## Postgis Transfer
-transfer_postigis_db and change_db_owner can be used for transfering data from one spatial database to another using the network. One of the uncommon (but very helpful) usage of theses scripts is to indirect backup data in a newer or older version of postgres/postgis.
+transfer_postigis_db and change_db_owner can be used to transfer data from one spatial database to another using the network. One of the uncommon (but very helpful) usage of those scripts is to backup data indirectly in a newer or older version of postgres/postgis.
 
 ### How it works
-The transfer_postgis_db shell script creates a custom using pg_dump, then creates a new database on destination and apply
-create extention postgis to enable using this extension. The all data is placed on new database with postgis_restore.pl perl's
-script which is shipped with postgis.
+The transfer_postgis_db shell script creates a custom database using pg_dump, then creates a new database at the destination and applies the create extention postgis to enable this spatial extension. All data is placed in the new database with postgis_restore.pl perl's script which is shipped with postgis.
 
-Since all operations are executed with 'postgres' user to ensure that all object are created, after the fist script is executed,
-the second one is used to change permissions of all objects to the onwer.
+Since all operations are executed with 'postgres' user, to ensure that all objects are created, after the first script execution, the second one is used to change permissions of all objects to the onwer.
 
 ### How to use
 To take a copy of the database just execute:
