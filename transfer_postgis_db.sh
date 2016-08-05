@@ -6,21 +6,21 @@ cat << EOF
 usage: $0 options
 
 This script transfer a postgis database from one server to another
- 
+
 OPTIONS:
 	-h
 	  Show this message
-	
+
 	-o
 	  Origin server
-	
+
 	-d
 	  Destination server
 	  Default value localhost
-	
+
 	-db
 	  Database name
-	
+
 	-ow
 	  Owner
 	  Default value postgres
@@ -37,7 +37,7 @@ DESTINATION="localhost"
 DBNAME=
 OWNER="postgres"
 BKPFOLDER="/var/tmp"
-PGISRESTORE=$(pg_config --sharedir)/contrib/postgis-2.1/postgis_restore.pl
+PGISRESTORE=$(pg_config --sharedir)/contrib/postgis-2.2/postgis_restore.pl
 
 # A string with command options
 OPTIONS=$@
@@ -62,9 +62,9 @@ do
 			DESTINATION=${ARGUMENTS[$IDX]};;
 		-f)
 			BKPFOLDER=${ARGUMENTS[$IDX]};;
-		-dbname)
+		-db)
 			DBNAME=${ARGUMENTS[$IDX]};;
-		-owner)
+		-ow)
 			OWNER=${ARGUMENTS[$IDX]};;
 	esac
 done
